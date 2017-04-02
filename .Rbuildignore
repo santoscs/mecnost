@@ -1,0 +1,5 @@
+^data-raw$
+^mecnost\.Rproj$
+^packrat/
+^\.Rprofile$
+^\.Rproj\.user$
