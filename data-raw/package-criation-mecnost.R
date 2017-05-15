@@ -28,42 +28,25 @@ devtools::check()
 # coloca as dependencias no pacote
 devtools::use_package("zoo")
 devtools::use_package("ggplot2")
+devtools::use_package("MARSS")
+devtools::use_package("grid")
+devtools::use_package("stats")
+devtools::use_package("reshape2")
+devtools::use_package("dplyr")
 
-
-
-devtools::use_package("dynlm")
-devtools::use_package("lmtest")
-devtools::use_package("urca")
-devtools::use_package("ggplot2")
-devtools::use_package("zoo")
-devtools::use_package("utils")
-
-# teste o pacote novamente
-devtools::check()
-
-# corriga os possiveis erros ou adivertencias apontados 
-## corrige os acentos
-tools::showNonASCII(readLines("R/tabelas.R"))
-tools::showNonASCII(readLines("R/ucmodel.R"))
-
-# teste o pacote novamente
-devtools::check()
-
-# dados de maneira externa no pacote
-devtools::use_data_raw()
 
 #Adding `data-raw` to `.Rbuildignore`
-devtools::use_build_ignore("data-raw")
-# salve os dados brutos nesta pasta juntamente com
-# o codigo para obter os dados transformados
+devtools::use_build_ignore(c("README.Rmd", "README_files", "README.docx", "README_cache"))
 
 
-# cria um vignette que reproduz os resultados
-devtools::use_vignette("nimcno-brasil")
 
-## instala o pacote 
-# vrifica por erros
+
+# verifica por erros
 devtools::document()
 devtools::check()
+
+
+
+## instala o pacote 
 # instala
 devtools::install()

@@ -4,7 +4,8 @@
 \alias{tsplot}
 \title{Plota series temporais com ggplot2}
 \usage{
-tsplot(x, y = NULL, escala = "free_y", facet = TRUE, name = NULL)
+tsplot(x, y = NULL, escala = "free_y", facet = TRUE, name = NULL,
+  title = NULL)
 }
 \arguments{
 \item{x}{objeto ts ou mts com as series temporais}
@@ -21,6 +22,8 @@ rows and columns ("free")}
 ou no mesmo grafico (facet = FALSE)}
 
 \item{name}{optional name for ts univariate}
+
+\item{title}{The main title (on top)}
 }
 \value{
 ggplot das series

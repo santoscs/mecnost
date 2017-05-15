@@ -3,3 +3,7 @@
 ^packrat/
 ^\.Rprofile$
 ^\.Rproj\.user$
+^README\.Rmd$
+^README_files$
+^README\.docx$
+^README_cache$

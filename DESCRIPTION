@@ -1,12 +1,18 @@
 Package: mecnost
-Title: Modelos Estruturais de Componentes N?o Observados para S?ries Temporais
+Title: Modelos Estruturais de Componentes Nao Observados para Series Temporais
 Version: 0.0.0.9000
 Authors@R: person("Cristiano", "Santos", email = "cristiano1br@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.3.2)
-License: LICENSE
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Imports: zoo,
-    ggplot2
+    ggplot2,
+    MARSS,
+    grid,
+    stats,
+    dlm,
+    reshape2,
+    dplyr

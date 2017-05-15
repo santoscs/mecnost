@@ -5,7 +5,7 @@
 \alias{pibsetor}
 \title{PIB setorial do Brasil}
 \format{Uma serie temporal mutivariada (mts) com 12 variaveis:
-"Agropec.",	"Ext.Mineral",	"Transfor.",	"Eletricidade", "Construção",	"Comércio",	"Transporte",	"Serv.infor.",	"Interm.finac.", 	"Ativ.imobili.",	"Outros Servicos" e	"Administacao pública"}
+"Agropec.",	"Ext.Mineral",	"Transfor.",	"Eletricidade", "Construcao",	"Comercio",	"Transporte",	"Serv.infor.",	"Interm.finac.", 	"Ativ.imobili.",	"Outros Servicos" e	"Administacao publica"}
 \source{
 Instituto Brasileiro de Geografia e Estatistica (IBGE). Site www.ibge.gov.br
 }

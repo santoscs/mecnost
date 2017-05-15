@@ -1,0 +1,71 @@
+---
+title: "Resultados"
+author: "Cristiano"
+date: "1 de maio de 2017"
+output: 
+  word_document: 
+    fig_height: 7
+    fig_width: 7
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = '../') 
+```
+
+# mecnost 
+
+## Modelos estruturais de componentes não obserados para séries temporais
+
+This package provides functions used in the Project 
+
+
+## Installation
+
+The package can then be installed using `devtools::install_github('santoscs/mecnost')`. 
+
+
+## Data visualiation
+
+Os dados são PIB trimestral dos setores extraídos das contas nacionais do IBGE 
+no período de 1996Q1 a 2016Q3.
+
+As séries temporais são mostradas na figuras seguir:
+
+```{r fig.cap = "Log do PIB setorial"}
+devtools::load_all()
+g1 <- tsplot(log(pibsetor[,1:7]))
+g2 <- tsplot(log(pibsetor[,8:14]))
+multiplot(g1, g2, cols = 2)
+```
+
+
+## Estimando os modelos
+
+Estima os modelos por MCMC
+
+```{r mecnost, cache=TRUE}
+# lpib <- as.list(log(pibsetor))
+# models <- purrr::map(lpib, btcmodel,
+#                     a.theta = 1, b.theta = 1000, n.sample = 2050,
+#                     thin = 1, save.states = TRUE)
+# 
+
+# save(models, file = "data-raw/estimacoes.RData")
+load(file = "data-raw/estimacoes.RData")
+y <- as.list(names(models))
+plots <- purrr::map2(models, y, autoplot.btcmodel, burnin=0.05)
+tabs <- purrr::map(models, tab.btcmodel, burnin=0.2)
+
+```
+
+
+## Mostra o gráfico dos componentes estimados
+
+```{r plot uc, fig.cap="Componentes estimados"}
+multiplot(plotlist=plots[1:4], cols = 2)
+multiplot(plotlist = plots[5:8], cols = 2)
+multiplot(plotlist = plots[9:12], cols = 2)
+multiplot(plotlist = plots[13:14], cols = 2)
+
+```
