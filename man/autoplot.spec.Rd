@@ -31,3 +31,4 @@ Plotting method for objects of class "spec". For multivariate
 time series it plots the marginal spectra of the series or 
 pairs plots of the coherency and phase of the cross-spectra.
 }
+

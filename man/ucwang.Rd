@@ -27,3 +27,4 @@ e ciclo por maxima expectancia (EM) usando o pacote "MARSS"
 \references{
 WANG, P. An examination of business cycle features in UK Sectoral Output. Applied Economics, v. 42, n. 25, p. 3241–3252, 2010.
 }
+

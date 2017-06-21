@@ -1,0 +1,126 @@
+--- 
+  # output: md_document 
+  output:
+    word_document:
+      fig_height: 9
+      fig_width: 10
+
+---
+
+```{r setup, echo=FALSE, include=FALSE}
+# Note to compile this file to README.mb, run the following:
+# rmarkdown::render('README.Rmd',output_format = 'md_document')
+knitr::opts_chunk$set( echo = FALSE, warning = FALSE, message = FALSE, error = FALSE )
+#knitr::opts_knit$set(root.dir = '../') 
+
+```
+
+# mecnost 
+
+## Modelos estruturais de componentes não obserados para séries temporais
+
+This package provides functions used in the Project 
+
+
+## Installation
+
+The package can then be installed using `devtools::install_github('santoscs/mecnost')`. 
+
+
+## Data visualiation
+
+Os dados são PIB trimestral dos setores extraídos das contas nacionais do IBGE 
+no período de 1996Q1 a 2016Q3.
+
+As séries temporais são mostradas na figuras seguir:
+
+```{r fig.cap = "Log do PIB setorial"}
+library(mecnost)
+g1 <- tsplot(log(pibsetores[,1:7]))
+g2 <- tsplot(log(pibsetores[,8:14]))
+multiplot(g1, g2, cols = 2)
+```
+
+
+## Estimando os modelos
+
+
+Estima os modelos por MCMC
+
+```{r mecnost, cache=FALSE}
+# estima os modelos (lento)
+# lpib <- as.list(log(pibsetores))
+#  models <- purrr::map(lpib, btcmodel,
+#                      a.theta = 1, b.theta = 1000, n.sample = 2050,
+#                      thin = 1, save.states = TRUE)
+# alarm()
+# 
+# save(models, file = "data-raw/estimacoes.RData")
+
+load(file = "data-raw/estimacoes.RData")
+library(ggplot2)
+y <- as.list(names(models))
+plots <- purrr::map2(models, y, autoplot, discarding=0.05)
+tabs <- purrr::map(models, tab.btcmodel, discarding=0.1)
+```
+
+
+## Mostra o gráfico dos componentes estimados
+
+```{r plot uc, fig.cap="Componentes estimados"}
+multiplot(plotlist = plots[1:4], cols = 2)
+multiplot(plotlist = plots[5:8], cols = 2)
+multiplot(plotlist = plots[9:12], cols = 2)
+multiplot(plotlist = plots[13:14], cols = 2)
+
+```
+
+
+## Mostra o valores dos parâmetros estimados
+
+```{r tables}
+tab <- purrr::invoke_map("cbind", list(tabs))
+tab <- t(tab[[1]])
+tab <- cbind(rownames(tab), tab)
+rownames(tab) <- as.vector(rbind(names(models), " r "))
+knitr::kable(tab)
+
+```
+
+## Gráficos para coherence e fase dos ciclos
+
+```{r coherence}
+# componentes estimados
+library(purrr)
+ciclos <- models %>% 
+  map(stimated.btcmodel) %>%
+  map_df(function(x) x[,"Ciclo (gap)"]) 
+
+ciclos <- as.ts(ciclos)
+tsp(ciclos) <- tsp(pibsetores)
+
+# calcula coerencia e fase
+library(ggplot2)
+library(astsa)
+sr=spec.pgram(ciclos[,1:7], kernel("daniell", 6),taper=0,plot=FALSE)
+autoplot(sr, plot.type = "coh")
+autoplot(sr, plot.type = "phase")
+sr=spec.pgram(ciclos[,8:14], kernel("daniell", 6),taper=0,plot=FALSE)
+autoplot(sr, plot.type = "coh")
+autoplot(sr, plot.type = "phase")
+
+dados1 <- models %>% 
+  map(stimated.btcmodel) %>%
+  map_df(function(x) x[,"Tendencia"]) 
+dados2 <- models %>% 
+  map(stimated.btcmodel) %>%
+  map_df(function(x) x[,"Ciclo (gap)"]) 
+dados3 <- models %>% 
+  map(stimated.btcmodel) %>%
+  map_df(function(x) x[,"Tx. de Cresc."]) 
+
+dados <- cbind(tren=dados1, cycle=dados2, grow=dados3)
+write.csv2(dados, file = "data-raw/resultados-estimacoes.csv")
+
+```
+

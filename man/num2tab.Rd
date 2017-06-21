@@ -18,3 +18,4 @@ vetor dos numeros formatos em character
 Formata numeros para tabelas e transforma para notacao centifica caso
 as seja menor que tres casas decimais
 }
+

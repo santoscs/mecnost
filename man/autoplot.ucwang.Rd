@@ -16,3 +16,4 @@ None. Function produces a plot
 Produces a plot of the trend, cycle 
 and grow components from an uc wang model.
 }
+

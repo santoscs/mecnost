@@ -27,9 +27,9 @@ ucwang <- function(x, init = c(1, 0.5, 0.2, 0.1, 0.1), model = 0, ...){
   requireNamespace("MARSS")
   Z=matrix(c(1, 1, 0, 0),1,4)
   A=matrix(0,1,1)
-  R=matrix(list("erro"),1,1)
+  R=matrix(0,1,1)
   if(model ==0){
-    U=matrix(list(0,0,0,0),4,1)
+    U=matrix(list(0,0,0,"gc"),4,1)
     B=matrix(list(1, 0, 0, 1, 
                   0, "phi1", "phi2", 0, 
                   0, 1, 0, 0, 
@@ -38,23 +38,31 @@ ucwang <- function(x, init = c(1, 0.5, 0.2, 0.1, 0.1), model = 0, ...){
   }
   if(model == 1){
     U=matrix(list(0,0,0, 0),4,1)
-    B=matrix(list(1, 0, 0, 1, 0, "phi1","phi2", 0, 0, 1, 0, 0, 0, 0, 0, 1),4,4, byrow = T)
+    B=matrix(list(1, 0, 0, 1,
+                  0, "phi1","phi2", 0, 
+                  0, 1, 0, 0, 
+                  0, 0, 0, 1),4,4, byrow = T)
     Q=matrix(list(0),4,4); diag(Q)=list("sigma2u","sigma2v", 0, "sigma2w")
   }
   if(model == 2){
     U=matrix(list(0,0,0,"gc"),4,1)
-    B=matrix(list(1, 0, 0, 1, 0, "phi1","phi2", 0, 0, 1, 0, 0, 0, 0, 0, 0),4,4, byrow = T)
+    B=matrix(list(1, 0, 0, 1, 
+                  0, "phi1","phi2", 0, 
+                  0, 1, 0, 0,
+                  0, 0, 0, 0),4,4, byrow = T)
     Q=matrix(list(0),4,4); diag(Q)=list("sigma2u","sigma2v", 0, 0)
   }
-  x.init <- c(median(x[1:5]), mean(diff(x)), mean(diff(x)), 0.05)
+  x.init <- c(median(x[1:5]), x[2:1], mean(diff(x)))
   x0=matrix(x.init,4,1)
-  V0=diag(init,4)
+  V0=diag(init, 4)
   model.gen=list(Z=Z,A=A,R=R,B=B,U=U,Q=Q,x0=x0,V0=V0,tinitx=1)
   # dados no formato aceito
   dat=t(as.matrix(x))
   colnames(dat) <- time(x)
   cntl.list=list(safe=TRUE, ...)
-  kemfit = MARSS(dat, model=model.gen, control=cntl.list, method="kem")
+  TT <- length(x)
+  
+  kemfit = MARSS(dat[2:TT], model=model.gen, control=cntl.list, method="kem")
   y <- list(kemfit=kemfit, data=x)
   class(y) <- "ucwang"
   return(y)
@@ -127,42 +135,3 @@ autoplot.ucwang <- function(object){
 }
 
 
-# 
-# 
-# ucwang <- function(x, init = c(1, 0.5, 0.2, 0.1, 0.1), model = 0, ...){
-#   requireNamespace("MARSS")
-#   Z=matrix(c(1, 1, 0, 0),1,4)
-#   A=matrix(0,1,1)
-#   R=matrix(list(0),1,1)
-#   if(model ==0){
-#     U=matrix(list(0,0,0,0),4,1)
-#     B=matrix(list(1, 0, 0, 1, 
-#                   0, "phi1", "phi2", 0, 
-#                   0, 1, 0, 0, 
-#                   0, 0, 0, 1),4,4, byrow = T)
-#     Q=matrix(list(0),4,4); diag(Q)=list("sigma2u","sigma2v", 0, "sigma2w")
-#   }
-#   if(model == 1){
-#     U=matrix(list(0,0,0, 0),4,1)
-#     B=matrix(list(1, 0, 0, 1, 0, "phi1","phi2", 0, 0, 1, 0, 0, 0, 0, 0, 1),4,4, byrow = T)
-#     Q=matrix(list(0),4,4); diag(Q)=list("sigma2u","sigma2v", 0, "sigma2w")
-#   }
-#   if(model == 2){
-#     U=matrix(list(0,0,0,"gc"),4,1)
-#     B=matrix(list(1, 0, 0, 1, 0, "phi1","phi2", 0, 0, 1, 0, 0, 0, 0, 0, 0),4,4, byrow = T)
-#     Q=matrix(list(0),4,4); diag(Q)=list("sigma2u","sigma2v", 0, 0)
-#   }
-#   
-#   x.init <- rep(x[1], 4)
-#   x0=matrix(x.init,4,1)
-#   V0=diag(init,4)
-#   model.gen=list(Z=Z,A=A,R=R,B=B,U=U,Q=Q,x0=x0,V0=V0,tinitx=1)
-#   # dados no formato aceito
-#   dat=t(as.matrix(x))
-#   colnames(dat) <- time(x)
-#   cntl.list=list(safe=TRUE, ...)
-#   kemfit = MARSS(dat, model=model.gen, control=cntl.list, method="kem")
-#   y <- list(kemfit=kemfit, data=x)
-#   class(y) <- "ucwang"
-#   return(y)
-# }

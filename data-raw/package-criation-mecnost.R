@@ -33,10 +33,12 @@ devtools::use_package("grid")
 devtools::use_package("stats")
 devtools::use_package("reshape2")
 devtools::use_package("dplyr")
+devtools::use_package("purrr")
 
 
 #Adding `data-raw` to `.Rbuildignore`
 devtools::use_build_ignore(c("README.Rmd", "README_files", "README.docx", "README_cache"))
+
 
 
 

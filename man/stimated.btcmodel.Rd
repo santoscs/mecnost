@@ -18,3 +18,4 @@ an ts object with trend, cycle and grow components estimated
 \description{
 Extract trend, cycle and grow components estimated from an btcmodel.
 }
+

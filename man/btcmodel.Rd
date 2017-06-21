@@ -45,3 +45,4 @@ de Petris e Petrone (2009).
 PETRIS, G.; PETRONE, S.; CAMPAGNOLI, P. 
 Dynamic Linear Models with R. New York: Springer Science, 2009.
 }
+

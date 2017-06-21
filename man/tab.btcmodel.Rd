@@ -23,3 +23,4 @@ using Sokal’s method}
 \description{
 Fornece a tabela resumo do coeficientes estimados por \link[mecnost]{btcmodel}
 }
+

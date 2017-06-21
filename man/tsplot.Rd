@@ -31,3 +31,4 @@ ggplot das series
 \description{
 Plota series temporais com ggplot2
 }
+

@@ -15,3 +15,4 @@ Uma tabela com os coeficientes estimados
 \description{
 Fornece a tabela resumo do coeficientes estimados por \link[mecnost]{ucwang}
 }
+

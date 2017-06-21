@@ -31,19 +31,19 @@
 #' @export
 #' 
 
-btcmodel <- function(y, a.theta, b.theta, dV = 1e-7, m0 = rep(0,4),
-                     C0 = diag(x=c(rep(1e7,2), rep(1,2))),
+btcmodel <- function(y, a.theta, b.theta, dV = 1e-7, m0 = rep(0,3),
+                     C0 = diag(x=c(rep(1e7,1), rep(1,2))),
                      n.sample = 1, thin = 0, save.states = FALSE)
 {
-  mod <- dlmModPoly(2, dV = dV, dW = rep(1,2)) +
+  mod <- dlmModPoly(1, dV = dV, dW = 1) +
     dlmModARMA(ar = rep(0,2), sigma2 = 1)
   #mod$m0 <- m0
   level0 <- y[1]
-  slope0 <- mean(diff(y))
-  mod$m0 <- c(level0, slope0, slope0, slope0)
+  ar0 <- mean(diff(y))
+  mod$m0 <- c(level0, ar0, ar0)
   mod$C0 <- C0
-  p <- 4 # dim of state space
-  r <- 3 # number of unknown variances
+  p <- 3 # dim of state space
+  r <- 2 # number of unknown variances
   nobs <- NROW(y)
   if ( is.numeric(thin) && (thin <- as.integer(thin)) >= 0 )
   {
@@ -90,25 +90,25 @@ btcmodel <- function(y, a.theta, b.theta, dV = 1e-7, m0 = rep(0,4),
   ARfullCond <- function(u)
   {
     ## log full conditional density for AR(2) parameters
-    mod$GG[3:4,3] <- u
+    mod$GG[2:3,2] <- u
     -dlmLL(y, mod) + sum(dnorm(u, sd = c(2,1) * 0.33, log=TRUE))
   }
   it.save <- 0
   for (it in 1:mcmc)
   {
     ## generate AR parameters
-    mod$GG[3:4,3] <- arms(mod$GG[3:4,3],
+    mod$GG[2:3,2] <- arms(mod$GG[2:3,2],
                           ARfullCond, AR2support, 1)
     ## generate states - FFBS
     modFilt <- dlmFilter(y, mod, simplify=TRUE)
     theta[] <- dlmBSample(modFilt)
     ## generate W
-    theta.center <- theta[-1,-4,drop=FALSE] -
-      (theta[-(nobs + 1),,drop=FALSE] %*% t(mod$GG))[,-4]
-    SStheta <- drop(sapply( 1 : 3, function(i)
+    theta.center <- theta[-1,-3,drop=FALSE] -
+      (theta[-(nobs + 1),,drop=FALSE] %*% t(mod$GG))[,-3]
+    SStheta <- drop(sapply( 1 : 2, function(i)
       crossprod(theta.center[,i])))
-    diag(mod$W)[1:3] <-
-      1 / rgamma(3, shape = shape.theta,
+    diag(mod$W)[1:2] <-
+      1 / rgamma(2, shape = shape.theta,
                  rate = rate.theta + 0.5 * SStheta)
     ## save current iteration, if appropriate
     if ( !(it %% every) )
@@ -116,8 +116,8 @@ btcmodel <- function(y, a.theta, b.theta, dV = 1e-7, m0 = rep(0,4),
       it.save <- it.save + 1
       if ( save.states )
         gibbsTheta[,,it.save] <- theta
-      gibbsPhi[it.save,] <- mod$GG[3:4,3]
-      gibbsVars[it.save,] <- diag(mod$W)[1:3]
+      gibbsPhi[it.save,] <- mod$GG[2:3,2]
+      gibbsVars[it.save,] <- diag(mod$W)[1:2]
     }
   }
   if(save.states){
@@ -239,8 +239,6 @@ tab.btcmodel <- function(x, discarding=0.05){
   rownames(tab) <- c("phi1", "phi2", "sigma-trend", "sigma-txcresc", "sigma-ciclo")
   return(tab)
 }
-
-
 
 
 
